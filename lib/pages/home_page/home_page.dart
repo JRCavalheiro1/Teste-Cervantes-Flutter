@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     String text = _textController.text;
     int? number = _isValidNumber(_numberController.text);
 
-    if (text.isNotEmpty && number != null) {
+    if (text.isNotEmpty && number != null && number > 0) {
       try {
         await dataBaseHelper.insertCadastro({
           'texto': text,
@@ -45,47 +45,59 @@ class _HomePageState extends State<HomePage> {
         _textController.clear();
         _numberController.clear();
         _loadRegistrations();
-        print("Registro realizado com sucesso!");
+        _showMessage(context, "Registro realizado com sucesso!");
       } catch (e) {
         if (e is DatabaseException && e.isUniqueConstraintError()) {
-          print('Este número já está cadastrado');
+          _showMessage(context, 'Este número já está cadastrado',
+              isError: true);
         } else {
-          print('Erro ao registrar ${e.toString()}');
+          _showMessage(context, 'Erro ao registrar ${e.toString()}',
+              isError: true);
         }
       }
     } else {
-      print("Preencha os campos corretamente!");
+      _showMessage(context, "Preencha os campos corretamente!", isError: true);
     }
   }
 
   void _edit() async {
     if (_selectedId == null) {
-      print('Nenhum registro selecionado para edição!');
+      _showMessage(context, "Nenhum registro selecionado para edição!",
+          isError: true);
       return;
     }
+
     String text = _textController.text;
     int? number = _isValidNumber(_numberController.text);
 
-    if (text.isNotEmpty && number != null) {
-      await dataBaseHelper.updateCadastro(_selectedId!, {
-        'texto': text,
-        'numero': number,
-      });
+    if (text.isNotEmpty && number != null && number > 0) {
+      // Verifica se número > 0
+      try {
+        await dataBaseHelper.updateCadastro(_selectedId!, {
+          'texto': text,
+          'numero': number,
+        });
 
-      _textController.clear();
-      _numberController.clear();
-      _selectedId = null;
-      _loadRegistrations();
-
-      print("Dados atualizados com sucesso!");
+        _textController.clear();
+        _numberController.clear();
+        _selectedId = null;
+        _loadRegistrations();
+        _showMessage(context, "Dados atualizados com sucesso!");
+      } catch (e) {
+        _showMessage(context, "Erro ao atualizar: ${e.toString()}",
+            isError: true);
+      }
     } else {
-      print("Preencha os campos corretamente!");
+      _showMessage(context,
+          "Preencha os campos corretamente e insira um número maior que 0!",
+          isError: true);
     }
   }
 
   void _delete() async {
     if (_selectedId == null) {
-      print("Nenhum registro selecionado para exclusão!");
+      _showMessage(context, "Nenhum registro selecionado para exclusão!",
+          isError: true);
       return;
     }
     await dataBaseHelper.deleteCadastro(_selectedId!);
@@ -94,10 +106,10 @@ class _HomePageState extends State<HomePage> {
     _selectedId = null;
     _loadRegistrations();
 
-    print("Registro deletado com sucesso!");
+    _showMessage(context, "Registro deletado com sucesso!");
   }
 
-  //verifica se o campo passado é um número válido
+  //verifica se o valor do campo é um número válido
   int? _isValidNumber(String numberIput) {
     if (numberIput.isEmpty) {
       return null;
@@ -109,6 +121,19 @@ class _HomePageState extends State<HomePage> {
     return validNumber;
   }
 
+  //método que exibe uma mensagem na tela quando os dados são carregados
+  void _showMessage(BuildContext context, String message,
+      {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        duration: isError ? Duration(seconds: 2) : Duration(seconds: 1),
+      ),
+    );
+  }
+
+  //constrói o widget estilizado da aplicação
   @override
   Widget build(BuildContext context) {
     return Scaffold(

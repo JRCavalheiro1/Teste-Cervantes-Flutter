@@ -90,7 +90,6 @@ class DatabaseHelper {
   //Atualiza um cadastro existente
   Future<int> updateCadastro(int id, Map<String, dynamic> row) async {
     Database db = await _instance.database;
-    print('Atualizando registro $id com valores: $row');
     return await db.update(
       'cadastro',
       row,
