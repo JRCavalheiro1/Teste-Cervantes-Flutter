@@ -19,7 +19,10 @@ class DatabaseHelper {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     String path = join(await getDatabasesPath(), 'cadastro-flutter.db');
+
+    //exibe no terminal o diretório onde o arquivo do banco de dados é criado
     print('Caminho do banco de dados: $path');
+
     return await openDatabase(
       path,
       version: 1,
