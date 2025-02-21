@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+// método que edita um registro já cadastrado
   void _edit() async {
     if (_selectedId == null) {
       _showMessage(context, "Nenhum registro selecionado para edição!",
@@ -71,7 +72,6 @@ class _HomePageState extends State<HomePage> {
     int? number = _isValidNumber(_numberController.text);
 
     if (text.isNotEmpty && number != null && number > 0) {
-      // Verifica se número > 0
       try {
         await dataBaseHelper.updateCadastro(_selectedId!, {
           'texto': text,
@@ -94,6 +94,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+//método que deleta um registro
   void _delete() async {
     if (_selectedId == null) {
       _showMessage(context, "Nenhum registro selecionado para exclusão!",
