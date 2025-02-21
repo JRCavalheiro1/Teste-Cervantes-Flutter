@@ -1,10 +1,8 @@
 
-# cadastro_flutter
-
 # Teste-Cervantes-Flutter
 Aplicação desktop para cadastro utilizando Flutter e SQLite
 
-## Instalar Dependencias do Projeto
+### Instalar Dependencias do Projeto
 
 Comando para instalar as dependências do projeto:
 
@@ -12,7 +10,7 @@ Comando para instalar as dependências do projeto:
 flutter pub get
 ```
 
-## Rodar o Projeto
+### Rodar o Projeto
 Comando para inicializar e testar o projeto no Windows: 
 
 ```sh
